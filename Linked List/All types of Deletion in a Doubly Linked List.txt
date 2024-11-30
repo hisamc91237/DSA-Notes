@@ -1,0 +1,103 @@
+At head :- 
+
+ListNode * deleteHead(ListNode* head) {
+
+        if(head == NULL || head -> next == NULL) return NULL;
+
+        head = head -> next;
+        head -> prev = NULL;
+
+        return head;
+
+    }
+
+At tail :- 
+
+ ListNode* deleteTail(ListNode* head) {
+
+        if (head == NULL || head -> next == NULL) return NULL;
+
+        ListNode* tail = head;
+
+    while(tail -> next != NULL){
+        tail = tail -> next;
+    }
+
+    ListNode* newTail = tail -> prev;
+    newTail -> next = NULL;
+    tail -> prev = NULL;
+    delete tail;
+
+    return head;
+
+    }
+
+At Kth position :-
+
+
+ ListNode* deleteKthElement(ListNode* head, int k) {
+
+        if(head == NULL) return NULL;
+
+        int cnt = 0;
+        ListNode* temp = head;
+        while(temp != NULL){
+            cnt++;
+            if(cnt == k) break;
+            temp = temp -> next;
+        }
+
+        if(temp == NULL ) return head;
+
+        // creating 2 pointers i.e front and back of kth Node
+        ListNode* back = temp -> prev;
+        ListNode* front = temp -> next;
+
+        if(back == NULL && front == NULL){
+            delete temp;
+            return NULL;
+        }
+        else if(back == NULL){
+            head = front;
+            front -> prev = nullptr;
+            
+        }
+        else if(front == NULL){
+            back -> next = NULL;
+        }
+        else{
+            back -> next = front;
+            front->prev = back;
+        }
+
+        delete temp;
+
+        return head;
+
+    }
+
+Delete a given node :- 
+
+void deleteGivenNode(ListNode* node) {
+
+        ListNode* prev = node -> prev;
+        ListNode* front = node -> next;
+
+         if (front == nullptr) {
+            prev->next = nullptr;
+            node->prev = nullptr;
+            delete node;
+            return;
+        }
+
+        // Disconnect node 
+        prev->next = front;
+        front->prev = prev;
+
+        // Set node's pointers to NULL
+        node->next = nullptr;
+        node->prev = nullptr;
+
+        // Free memory
+        delete node;
+    }

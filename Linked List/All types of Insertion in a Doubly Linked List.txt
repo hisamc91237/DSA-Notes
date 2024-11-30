@@ -1,0 +1,82 @@
+At Head :- 
+
+ListNode* insertBeforeHead(ListNode* head, int X) {
+
+        ListNode* newHead  = new ListNode(X,head,NULL);
+        head -> prev = newHead;
+
+        return newHead;
+
+    }
+
+At Tail :-
+
+ListNode* insertBeforeTail(ListNode* head, int X) {
+
+        if(head == NULL) return NULL;
+
+        // If DLL has only one Node.
+        if(head -> next == NULL){
+            ListNode* newNode = new ListNode(X,head,NULL);
+            head -> prev = newNode;
+
+            return newNode;
+        }
+
+        // Traversing till tail
+        ListNode* tail = head;
+        while(tail -> next != NULL) tail = tail -> next;
+
+        ListNode* prev = tail -> prev;
+
+        ListNode* newNode = new ListNode(X,tail,prev);
+        prev -> next = newNode;
+        tail -> prev = newNode;
+
+        return head;
+
+    }
+
+At Kth Position :- 
+
+ListNode* insertBeforeKthPosition(ListNode* head, int X, int k) {
+
+        if(head == NULL) return NULL;
+
+        if(k == 1){
+            ListNode* newHead = new ListNode(X,head,NULL);
+            head -> prev = newHead;
+            return newHead;
+        }
+
+        int cnt = 0;
+        ListNode* temp = head;
+
+        while(temp -> next!= NULL){
+            cnt++;
+            if(cnt == k) break;
+            temp = temp -> next;
+        }
+
+        ListNode* prev = temp -> prev;
+
+        ListNode* newNode = new ListNode(X,temp,prev);
+        prev -> next = newNode;
+        temp -> prev = newNode;
+
+        return head;
+
+    }
+
+At given Node :-
+
+void insertBeforeGivenNode(ListNode* node, int X) {
+
+        ListNode* prev = node -> prev;
+        ListNode* newNode = new ListNode(X,node,prev);
+        prev -> next = newNode;
+        node -> prev = newNode;
+
+        return;
+
+    }

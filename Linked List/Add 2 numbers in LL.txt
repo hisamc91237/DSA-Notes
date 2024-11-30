@@ -1,0 +1,68 @@
+Given two non-empty linked lists l1 and l2 which represent two non-negative integers.
+
+The digits are stored in reverse order with each node storing one digit.
+
+Add two numbers and return the sum as a linked list.
+
+
+The sum Linked List will be in reverse order as well.
+The Two given Linked Lists represent numbers without any leading zeros, except when the number is zero itself.
+
+Example 1
+Input: l1 = head -> 5 -> 4, l2 = head -> 4
+
+Output: head -> 9 -> 4
+
+Explanation: l1 = 45, l2 = 4.
+
+l1 + l2 = 45 + 4 = 49.
+
+Example 2
+Input: l1 = head -> 4 -> 5 -> 6, l2 = head -> 1 -> 2 -> 3
+
+Output: head -> 5 -> 7 -> 9
+
+Explanation: l1 = 654, l2 = 321.
+
+l1 + l2 = 654 + 321 = 975.
+
+
+Code :
+
+ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+
+        // Dummy node
+        ListNode* dummyNode = new ListNode(-1);
+
+        ListNode* curr = dummyNode; // for creating connections
+
+        ListNode* temp1 = l1;
+        ListNode* temp2 = l2;
+        int carry = 0;
+
+        while(temp1 != NULL || temp2 != NULL){
+            int sum = carry;
+
+            if(temp1) sum += temp1 -> val;
+            if(temp2) sum += temp2 -> val;
+
+            ListNode* newNode = new ListNode(sum % 10);
+            curr -> next = newNode;
+            curr = newNode;
+            carry = sum / 10;
+
+            if(temp1) temp1 = temp1 -> next;
+            if(temp2) temp2 = temp2 -> next;
+        }
+
+        if(carry){
+            ListNode* newNode = new ListNode(carry);
+            curr -> next = newNode;
+            curr = newNode;
+        }
+
+        return dummyNode -> next;
+    }
+
+TC : O(max(L1, L2))
+SC : O(max(L1, L2)) -This space is asked by the question and it cannot be optimized to 1.

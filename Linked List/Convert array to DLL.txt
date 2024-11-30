@@ -1,0 +1,17 @@
+Given an array nums, convert it into a doubly linked list and return the head of the list.
+
+ListNode* arrayToLinkedList(vector<int> &nums) {
+
+            ListNode* head = new ListNode(nums[0], NULL, NULL); // creating a head of DLL
+            ListNode* curr = head;
+
+            for(int i = 1; i<nums.size(); i++){
+                ListNode* newNode = new ListNode(nums[i],NULL,curr); //Creating connections with next and prev links
+                curr -> next = newNode;
+                curr = newNode;
+            }
+
+            return head;
+    }
+
+TC : O(N)

@@ -1,0 +1,97 @@
+At Head :- 
+
+ListNode* insertAtHead(ListNode* &head, int X) {
+
+        if(head == NULL)
+        {
+            head = new ListNode(X,NULL);
+            return head;
+        }
+
+            ListNode* newHead = new ListNode(X);
+            newHead -> next = head;
+            head = newHead;
+
+            return head;
+    }
+
+At Tail :- 
+
+ListNode* insertAtTail(ListNode* &head, int X) {
+
+        ListNode* newNode = new ListNode(X);
+        ListNode* temp = head;
+
+        if(head == NULL){
+            head = new ListNode(X);
+            return head;
+        }
+
+        while(temp -> next != NULL){
+            temp = temp -> next;
+        }
+
+        temp -> next = newNode;
+        return head;
+
+    }
+
+At kth position :- 
+
+ListNode* insertAtKthPosition(ListNode* &head, int X, int k) {
+
+        // To check head is null (insert at head)
+        if(head == NULL && k == 1){
+            head = new ListNode(X);
+            return head;
+        }
+
+        // Insert at head
+        if(k == 1){
+            ListNode* newHead = new ListNode(X, head);
+            head = newHead;
+            return head;
+        }
+
+        ListNode* temp = head;
+        int count = 0;
+
+        while(temp != NULL){
+            count++;
+            if(count == (k - 1)){
+                ListNode* newNode = new ListNode(X,temp -> next); // temp -> next points to the next pointer
+                temp -> next = newNode;
+                break;
+            }
+            temp = temp -> next;
+        }
+
+        return head;
+
+    }
+
+Before given position :-
+
+ListNode* insertBeforeX(ListNode* &head, int X, int val) {
+        
+        if(head == NULL) return NULL;
+
+        if( head -> val == X) {
+            return new ListNode(val,head);
+        }
+
+        ListNode* temp = head;
+        ListNode* prev = NULL;
+
+        while(temp -> next != NULL){
+            if(temp -> next-> val == X){
+                ListNode* newNode = new ListNode(val,temp -> next);
+                temp -> next = newNode;
+                break;
+            }
+            temp = temp -> next;
+        }
+        return head;
+    }   
+
+
