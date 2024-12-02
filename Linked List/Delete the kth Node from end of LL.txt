@@ -1,0 +1,93 @@
+Given the head of a singly linked list and an integer n. Remove the nth node from the back of the linked List and return the head of the modified list. The value of n will always be less than or equal to the number of nodes in the linked list.
+
+
+Example 1
+Input: head -> 1 -> 2 -> 3 -> 4 -> 5, n = 2
+
+Output: head -> 1 -> 2 -> 3 -> 5
+
+Explanation: The 2nd node from the back was the node with value 4.
+
+Example 2
+Input: head -> 5 -> 4 -> 3 -> 2 -> 1, n = 5
+
+Output: head -> 4 -> 3 -> 2 -> 1
+
+Explanation: The 5th node from the back is the first node.
+
+Example 3
+Input: head -> 9 -> 8 -> 7, n = 1
+
+Output:
+3
+
+
+Brute Force : 
+
+ ListNode* removeNthFromEnd(ListNode* head, int n) {
+
+        if (head == NULL) return NULL;
+
+        int cnt = 0;
+        ListNode* temp = head;
+
+        // count the number of nodes
+        while( temp != NULL){
+            cnt++;
+            temp = temp -> next;
+        }
+
+        // if n is first node
+        if(cnt == n ) return head -> next;
+
+        // one node before the node to del
+        int res = cnt - n;
+        temp = head;
+
+        // Loop to iterate and del the node
+        while(temp != NULL){
+            res--;
+            if(res == 0){
+                ListNode* delNode = temp -> next;
+                temp -> next = temp -> next -> next;
+                delete delNode;
+                break;
+            }
+            temp = temp -> next;
+        }
+        return head;
+    }
+
+TC : O(2N)
+SC : O(1)
+
+
+Optimal Approach : 
+
+ ListNode* removeNthFromEnd(ListNode* head, int n) {
+
+        if(head == NULL) return head;
+
+        ListNode* fast = head;
+        ListNode* slow = head;
+
+        // Algo : iterating till the given n
+        for(int i =0;i<n;i++) fast = fast -> next; 
+
+        // if n == size of LL
+        if(fast == NULL) return head -> next;
+
+        while(fast -> next != NULL){
+            fast = fast -> next;
+            slow = slow -> next;
+        }
+
+        ListNode* delNode = slow -> next;
+        slow -> next = slow -> next -> next;
+        delete delNode;
+
+        return head;
+        
+    }
+
+TC : O(N)

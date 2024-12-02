@@ -1,0 +1,97 @@
+Given the head of a singly linked list. Group all the nodes with odd indices followed by all the nodes with even indices and return the reordered list.
+
+Consider the 1st node to have index 1 and so on. The relative order of the elements inside the odd and even group must remain the same as the given input.
+
+
+Example 1
+Input: head -> 1 -> 2 -> 3 -> 4 -> 5
+
+Output: head -> 1 -> 3 -> 5 -> 2 -> 4
+
+Explanation: The nodes with odd indices are 1, 3, 5 and the ones with even indices are 2, 4.
+
+Example 2
+Input: head -> 4 -> 3 -> 2 -> 1
+
+Output: head -> 4 -> 2 -> 3 -> 1
+
+Explanation: The nodes with odd indices are 4, 2 and the ones with even indices are 3, 1.
+
+
+Brute Force : 
+
+ListNode* oddEvenList(ListNode* head) {
+
+        // edge case
+        if(head == NULL || head -> next == NULL) return head;
+
+        vector<int> ans; // to store value
+
+        ListNode* temp = head; // index 1
+        
+        // For odd index
+        while(temp != NULL && temp -> next != NULL){
+           
+            ans.push_back(temp -> val);
+            temp = temp -> next -> next;
+        }
+        if(temp) ans.push_back(temp -> val);
+
+        temp = head -> next; /// index 2
+
+        // For even index
+        while(temp != NULL && temp -> next != NULL){
+           
+            ans.push_back(temp -> val);
+            temp = temp -> next -> next;
+        }
+        if(temp) ans.push_back(temp -> val);
+        
+        temp = head;
+        int i = 0;
+        while(temp != NULL){
+            temp -> val = ans[i]; //changing value of LL
+            i++;
+            temp = temp -> next;
+        }
+
+
+        return head;
+
+    }
+
+TC : O(2N)
+SC : O(N)
+
+
+Optimal : 
+
+ListNode* oddEvenList(ListNode* head) {
+
+
+        // edge case
+        if(head == NULL || head -> next == NULL) return head;
+
+        ListNode* odd = head;
+        ListNode* even = head -> next;
+        ListNode* evenHead = head -> next; // to preserve the index for connection
+
+        while(even != NULL && even -> next != NULL){
+            
+            // connecting all the odd and even nodes together
+            odd -> next = odd -> next -> next;
+            even -> next = even -> next -> next;
+		
+	    //Moving one node ahead
+            odd = odd -> next;
+            even = even -> next;
+        }
+
+        // connecting odd to even
+        odd -> next = evenHead;
+
+        return head;
+    }
+
+TC : O(N)
+SC : O(N)

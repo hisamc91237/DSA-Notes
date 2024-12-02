@@ -1,0 +1,130 @@
+Given the head of a singly linked list consisting of only 0, 1 or 2. Sort the given linked list and return the head of the modified list. Do it in-place by changing the links between the nodes without creating new nodes.
+
+
+Example 1
+Input: head -> 1 -> 0 -> 2 -> 0 -> 1
+
+Output: head -> 0 -> 0 -> 1 -> 1 -> 2
+
+Explanation: The values after sorting are [0, 0, 1, 1, 2].
+
+Example 2
+Input: head -> 1 -> 1 -> 1 -> 0
+
+Output: head -> 0 -> 1 -> 1 -> 1
+
+Explanation: The values after sorting are [0, 1, 1, 1].
+
+Example 3
+Input: head -> 2 -> 2 -> 1 -> 2
+
+Output:
+2
+
+
+Brute Force : 
+
+    ListNode *sortList(ListNode *head) {
+
+        // edge cases
+        if(head == NULL || head -> next == NULL) return head;
+
+        int cnt0 = 0;
+        int cnt1 = 0;
+        int cnt2 = 0;
+
+        ListNode* temp = head;
+
+        // Loop to count the number of 0,1,2.
+        while(temp != NULL){
+            if(temp -> val == 0) cnt0++;
+            else if(temp -> val == 1) cnt1++;
+            else cnt2++;
+
+            temp = temp -> next;
+        }
+            temp = head;
+
+            // Loop to replacing the value with 0,1,2.
+            while(temp != NULL){
+                if(cnt0){
+                    temp -> val = 0;
+                    cnt0--;
+                }
+                else if(cnt1){
+                    temp -> val = 1;
+                    cnt1--;
+                }
+                else{
+                    temp -> val = 2;
+                    cnt2--;
+                }
+
+                temp = temp -> next;
+            }
+            
+        return head;
+
+    }
+
+TC : O(2N)
+SC : O(1)
+
+
+Optimised Approach: 
+
+ListNode *sortList(ListNode *head) {
+
+        // Edge cases
+        if(head == NULL || head -> next == NULL) return head;
+
+        // Creating Dummy Nodes
+        ListNode* zeroHead = new ListNode(-1);
+        ListNode* oneHead = new ListNode(-1);
+        ListNode* twoHead = new ListNode(-1);
+
+        // Pointer nodes
+        ListNode* zero = zeroHead;
+        ListNode* one = oneHead;
+        ListNode* two = twoHead;
+
+        ListNode* temp = head;
+
+        // Loop to segregate 3 LL i.e LL with 0,1 & 2
+        while(temp != NULL){
+            if(temp -> val == 0){
+                zero -> next = temp;
+                zero = temp;
+            }
+            else if(temp -> val == 1){
+                one -> next = temp;
+                one = temp;
+            }
+            else{
+                two -> next = temp;
+                two = temp;
+            }
+
+            temp = temp -> next;
+        }
+
+        // connecting LL with 0 to 1 || 2.
+        // if one is not there connect with 2.
+        zero -> next = (oneHead -> next)? oneHead -> next : twoHead -> next;
+
+        // if there is no 0 in LL.
+        one -> next = twoHead -> next;
+
+        // connecting the last node with NULL
+        two -> next = NULL;
+
+        head = zeroHead -> next;
+
+        return head;
+
+
+    }
+
+TC : O(N)
+SC : O(1)
+
