@@ -1,0 +1,51 @@
+Given the head of a singly linked list. Return true if a loop exists in the linked list or return false.
+
+A loop exists in a linked list if some node in the list can be reached again by continuously following the next pointer.
+
+Internally, pos is used to denote the index(0-based) of the node from where the loop starts. Note that pos is not passed as a parameter.
+
+
+Brute : 
+
+bool hasCycle(ListNode *head) {
+        
+        // For hashing and check if visited
+        unordered_set<ListNode*> node_set;
+
+        ListNode* temp = head;
+        while(temp){
+            
+            // check if node is present in set or not
+            if(node_set.find(temp) != node_set.end()) return true;
+
+            node_set.insert(temp);
+            temp = temp -> next;
+        }
+        return false;
+    }
+
+TC : O(N)
+SC : O(N)
+
+
+Optimal : 
+
+ bool hasCycle(ListNode *head) {
+
+            ListNode* slow = head;
+            ListNode* fast = head;
+
+            while(fast != NULL && fast -> next != NULL){
+
+                fast = fast -> next -> next;
+                slow = slow -> next;
+
+                if(fast == slow) return true;
+            }
+
+            return false;
+    }
+
+TC : O(N) - Around N
+SC : O(1)
+

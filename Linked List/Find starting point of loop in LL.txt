@@ -1,0 +1,58 @@
+Given the head of a singly linked list, the task is to find the starting point of a loop in the linked list if it exists. Return the starting node if a loop exists; otherwise, return null.
+
+A loop exists in a linked list if some node in the list can be reached again by continuously following the next pointer. Internally, pos denotes the index (0-based) of the node from where the loop starts.
+
+Note that pos is not passed as a parameter.
+
+
+Brute : 
+
+ ListNode *detectCycle(ListNode *head) {
+        
+        // hashing
+        unordered_set<ListNode*> node_set;
+
+        ListNode* temp = head;
+
+        while(temp != NULL){
+            if(node_set.find(temp) != node_set.end()) return temp;
+
+            node_set.insert(temp);
+            temp = temp -> next;
+        }
+
+        return NULL;
+}
+
+TC : O(N)
+SC : O(N)
+
+
+Optimal : 
+
+ ListNode* detectCycle(ListNode* head) {
+
+        // step 1 L : Detect a loop
+        ListNode* fast = head;
+        ListNode* slow = head;
+
+        while(fast != NULL && fast -> next != NULL){
+            fast = fast -> next -> next;
+            slow = slow -> next;
+
+            if(fast == slow){
+
+                //Step 2 : Find the starting point of Loop
+                slow = head;
+                while(fast != slow){
+                    fast = fast -> next;
+                    slow = slow -> next;
+                }
+                return slow;
+            }
+        }
+        return NULL;
+    }
+
+TC : O(N)
+SC : O(1)

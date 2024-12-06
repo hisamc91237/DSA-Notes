@@ -1,0 +1,108 @@
+Given the heads of two linked lists A and B, containing positive integers. Find the node at which the two linked lists intersect. If they do intersect, return the node at which the intersection begins, otherwise return null.
+
+The Linked List will not contain any cycles. The linked lists must retain their original structure, given as per the input, after the function returns.
+
+Note: for custom input, the following parameters are required(your program is not provided with these parameters):
+
+intersectVal - The value of the node where the intersection occurs. This is -1 if there is no intersected node.
+skipA - The number of nodes to skip ahead in listA (starting from the head) to get to the intersected node(-1 if no intersection).
+skipB - The number of nodes to skip ahead in listB (starting from the head) to get to the intersected node(-1 if no intersection).
+listA - The first linked list.
+listB - The second linked list.
+
+Example 1
+Input: listA: intersectVal = 4, skipA = 3, skipB = 2, head -> 1 -> 2 -> 3 -> 4 -> 5, listB: head -> 7 -> 8 -> 4 -> 5
+
+Output(value at returned node is displayed): 4
+
+Explanation: The two lists have nodes with values 4 and 5 as their tails.
+
+Example 2
+Input: listA: intersectVal = -1, skipA = -1, skipB = -1, head -> 1 -> 2 -> 3, listB: head -> 8 -> 9
+
+Output(value at returned node is displayed): null
+
+Explanation: The two lists do not intersect.
+
+
+Brute force :
+
+ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+
+        while(headB != NULL){
+            ListNode* temp = headA;
+
+            while(temp != NULL){
+                if(temp == headB) return headB;
+
+                temp = temp -> next;
+            }
+            headB = headB -> next;
+        }
+
+        return NULL;
+
+    }
+
+TC : O(m x n)
+SC : O(1)
+
+
+Better : 
+
+ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+
+        // set to store data
+        unordered_set<ListNode*> node_set;
+
+        // inserting element in set for hashing 
+        ListNode* temp = headA;
+        while(temp != NULL){
+        node_set.insert(temp);
+        temp = temp -> next;        
+    }
+
+    // finding the node in set
+    temp = headB;
+    while(temp != NULL){
+        if(node_set.find(temp) != node_set.end()) return temp;
+        temp = temp -> next;
+    }
+
+    return NULL;
+    }
+
+TC : O(m + n)
+SC : O(n)
+
+
+Best : 
+
+ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+
+        if(headA == NULL || headB == NULL) return NULL;
+        
+        // Two pointer
+        ListNode* first = headA;
+        ListNode* second = headB;
+
+        while(first != second){
+
+            // Iterate one step
+            first = first -> next;
+            second = second -> next;
+
+            // Intersection
+            if(first == second) return first;
+
+            // again start from opposite head if NULL
+            if(first == NULL) first = headB;
+            if(second == NULL) second = headA;
+         }
+
+         return first;
+        
+    }
+
+TC : O(m + n)
+SC : O(1)
