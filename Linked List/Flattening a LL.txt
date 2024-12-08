@@ -1,0 +1,101 @@
+Given a special linked list containing n head nodes where every node in the linked list contains two pointers:
+
+‘Next’ points to the next node in the list
+‘Child’ pointer to a linked list where the current node is the head
+Each of these child linked lists is in sorted order and connected by a 'child' pointer.
+
+Flatten this linked list such that all nodes appear in a single layer connected by the 'child' pointer and return the head of the modified list.
+
+
+Brute Force : 
+
+ ListNode* convertArrToLinkedList(vector<int>& arr) {
+        /* Create a dummy node to serve as
+         the head of the linked list */
+        ListNode* dummyNode = new ListNode(-1);
+        ListNode* temp = dummyNode;
+
+        /* Iterate through the vector and
+         create nodes with vector elements */
+        for (int i=0; i < arr.size(); i++) {
+            // Create a new node with the vector element
+            temp->child = new ListNode(arr[i]);
+            
+            // Update the temporary pointer
+            temp = temp->child;
+        }
+        
+        /* Return the linked list starting
+         from the next of the dummy node */
+        return dummyNode->child;
+    }
+
+public:
+    // Function to flatten a linked list with child pointers 
+    ListNode* flattenLinkedList(ListNode* head) {
+        vector<int> arr;
+
+        // Traverse through the linked list
+        while (head != nullptr) {
+            /* Traverse through the child
+             nodes of each head node */
+            ListNode* t2 = head;
+            
+            while (t2 != nullptr) {
+                // Store each node's data in the array
+                arr.push_back(t2->val);
+                
+                // Move to the next child node
+                t2 = t2->child;
+            }
+            // Move to the next head node
+            head = head->next;
+        }
+
+TC : O(NxM) + O(NxM log(NxM)) + O(NxM) 
+SC : O(NxM) + O(NxM)
+
+
+Optimal : 
+
+// merge 2 LL
+    ListNode* mergeLL(ListNode* l1, ListNode* l2){
+
+        ListNode* dummyNode = new ListNode(-1);
+        ListNode* temp = dummyNode;
+
+        while(l1 && l2){
+            if(l1 -> val < l2 -> val){
+                temp -> child = l1;
+                temp = l1;
+                l1 = l1 -> child;
+            }
+            else{
+                temp -> child = l2;
+                temp = l2;
+                l2 = l2 -> child;
+            }
+
+        }
+        if(l1) temp -> child = l1;
+            else temp -> child = l2;
+
+            // to make the right part of node as next.
+            if(dummyNode -> child) dummyNode -> child -> next = nullptr;
+            return dummyNode -> child;
+    }
+
+    ListNode* flattenLinkedList(ListNode* &head) {
+
+        // base case
+        if(head == NULL || head -> next == NULL) return head;
+
+        ListNode* mergeHead = flattenLinkedList(head -> next);
+
+        head = mergeLL(head, mergeHead);
+
+        return head;
+    }
+
+TC : O(Nx(2M)) ~ O(2NxM)
+SC : O(1)

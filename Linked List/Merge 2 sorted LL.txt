@@ -1,0 +1,58 @@
+Given the heads of two linked lists, list1 and list2, where each linked list has its elements sorted in non-decreasing order, merge them into a single sorted linked list and return the head of the merged linked list.
+
+
+Example 1
+Input: list1 = head -> 2 -> 4 -> 7 -> 9, list2 = head -> 1 -> 2 -> 5 -> 6
+
+Output: head -> 1 -> 2 -> 2 -> 4 -> 5 -> 6 ->7 -> 9
+
+Explanation: head -> 1 -> 2 -> 2 -> 4 -> 5 -> 6 ->7 -> 9, the underlined nodes come from list2, the others come from list1.
+
+Example 2
+Input: list1 = head -> 1 -> 2 -> 3 -> 4, list2 = head -> 5 -> 6 -> 10
+
+Output: head -> 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 10
+
+Explanation: head -> 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 10, the underlined nodes come from list2, the others come from list1.
+
+
+Appraoch : 
+
+ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
+
+        // Dummy Node concept
+        ListNode* dummyNode = new ListNode(-1);
+
+        // pointers to iterate
+        ListNode* temp = dummyNode;
+        ListNode* t1 = list1;
+        ListNode* t2 = list2;
+
+
+        while(t1 && t2){
+
+            // if LL1 is small
+            if(t1 -> val < t2 -> val){
+                temp -> next = t1;
+                temp  = t1;
+                t1 = t1 -> next;
+            }
+
+            // LL2 is small
+            else{
+                temp -> next = t2;
+                temp = t2;
+                t2 = t2 -> next;
+            }
+        }
+
+        // if list is not exhausted
+        if(t1) temp -> next = t1;
+        if(t2) temp -> next = t2;
+
+        return dummyNode -> next;
+        
+    }
+
+TC : O(N1 + N2)
+SC : O(1)

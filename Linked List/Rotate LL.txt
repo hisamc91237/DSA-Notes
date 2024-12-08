@@ -1,0 +1,95 @@
+Given the head of a singly linked list containing integers, shift the elements of the linked list to the right by k places and return the head of the modified list. Do not change the values of the nodes, only change the links between nodes.
+
+
+Example 1
+Input: head -> 1 -> 2 -> 3 -> 4 -> 5, k = 2
+
+Output: head -> 4 -> 5 -> 1 -> 2 -> 3
+
+Explanation:
+
+List after 1 shift to right: head -> 5 -> 1 -> 2 -> 3 -> 4.
+
+List after 2 shift to right: head -> 4 -> 5 -> 1 -> 2 -> 3.
+
+Example 2
+Input: head -> 1 -> 2 -> 3 -> 4 -> 5, k = 4
+
+Output: head -> 2 -> 3 -> 4 -> 5 -> 1
+
+Explanation:
+
+List after 1 shift to right: head -> 5 -> 1 -> 2 -> 3 -> 4.
+
+List after 2 shift to right: head -> 4 -> 5 -> 1 -> 2 -> 3.
+
+List after 3 shift to right: head -> 3 -> 4 -> 5 -> 1 -> 2.
+
+List after 4 shift to right: head -> 2 -> 3 -> 4 -> 5 -> 1.
+
+
+BRUTE APPROACH :
+
+ ListNode* rotateRight(ListNode* head, int k) {
+        // Base case: if list is empty or has only one node
+        if (head == NULL || head->next == NULL) return head;
+
+        // Perform rotation k times
+        for (int i = 0; i < k; i++) {
+            ListNode* temp = head;
+            // Find the second last node
+            while (temp->next->next != NULL) 
+                temp = temp->next;
+            // Get the last node
+            ListNode* end = temp->next;
+            // Break the link between 
+            // second last and last node
+            temp->next = NULL;
+            // Make the last node 
+            // as new head
+            end->next = head;
+            head = end;
+        }
+        return head;
+}
+
+Optimal : 
+
+ListNode* rotateRight(ListNode* head, int k) {
+        
+        // edge case
+        if(head == NULL || head -> next == NULL || k == 0) return head;
+        
+        // Finding the length of LL
+        int n = 0;
+        ListNode* temp = head;
+        while(temp != NULL){
+            n++;
+            temp = temp -> next;           
+        }
+
+        // reducing the number of rotations
+        k = k % n;
+        if(k == 0) return head; // edge case
+
+        // to find the kth Node
+        int breakPoint = n - k;
+        temp = head;  
+        for(int i=1; i< breakPoint; i++) temp = temp -> next;
+
+        // Break after the kth Node
+        ListNode* newHead = temp -> next;
+        temp -> next = NULL;
+
+        // Iterate till last of remaining LL to connect
+        temp = newHead;
+        while(temp -> next != NULL) temp = temp -> next;
+
+        temp -> next = head;
+        return newHead;
+        
+    }
+
+TC : O(N) + O ( N % K )
+SC : O(1)
+
