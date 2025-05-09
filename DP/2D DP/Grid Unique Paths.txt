@@ -1,0 +1,133 @@
+Given two integers m and n, representing the number of rows and columns of a 2d array named matrix. Return the number of unique ways to go from the top-left cell (matrix[0][0]) to the bottom-right cell (matrix[m-1][n-1]).
+
+Movement is allowed only in two directions from a cell: right and bottom.
+
+Examples:
+Input: m = 3, n = 2
+
+Output: 3
+
+Explanation: There are 3 unique ways to go from the top left to the bottom right cell.
+
+1) right -> down -> down
+
+2) down -> right -> down
+
+3) down -> down -> right
+
+
+Recursive : 
+
+class Solution {
+   public:
+    int helper(int i, int j) {
+        // base case
+        if (i == 0 && j == 0) return 1;
+        if (i < 0 || j < 0) return 0; // if up and left exceeds
+
+        int up = helper(i - 1, j); // i -1 because going up
+        int left = helper(i, j - 1); // j -1 because gping left
+
+        return up + left;
+    }
+
+    int uniquePaths(int m, int n) { 
+        return helper(m - 1, n - 1);
+        }
+};
+
+TC : O(2^mxn)
+SC : O((m-1) + (n-1)) --> length of the path
+
+Memoization : 
+
+class Solution {
+   public:
+    int helper(int i, int j, vector<vector<int>> &dp) {
+        // base case
+        if (i == 0 && j == 0) return 1;
+        if (i < 0 || j < 0) return 0; // if up and left exceeds
+
+        if(dp[i][j] != -1) return dp[i][j];
+
+        int up = helper(i - 1, j,dp); // i -1 because going up
+        int left = helper(i, j - 1,dp); // j -1 because gping left
+
+        return dp[i][j] = up + left;
+    }
+
+    int uniquePaths(int m, int n) { 
+
+        vector<vector<int>> dp(m, vector<int>(n, -1));
+        return helper(m - 1, n - 1,dp);
+        }
+};
+
+TC : O(mxn)
+SC : O((m-1) + (n-1)) + O(mxn) --> length of the path
+
+Tabulation : 
+
+class Solution {
+   public:
+    int uniquePaths(int m, int n) {
+        int dp[m][n];
+
+        // traverse through states
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == 0 && j == 0)
+                    dp[i][j] = 1; // same like base
+                else {
+                    int up = 0;
+                    int left = 0;
+
+                    // check that i and j should not go in  negative
+                    if (i > 0) up = dp[i - 1][j]; 
+                    if (j > 0) left = dp[i][j - 1];
+
+                    dp[i][j] = up + left;
+                }
+            }
+        }
+        return dp[m - 1][n - 1];
+    }
+};
+
+SC : O(mxn)
+
+Space Optimzation : 
+
+class Solution {
+   public:
+    int uniquePaths(int m, int n) {
+        
+        // using a dummy array
+        vector<int> prev(n, 0);
+
+        // traverse through states
+        for (int i = 0; i < m; i++) {
+
+            // using curr arrray with col size
+            vector<int> curr(n, 0);
+            for (int j = 0; j < n; j++) {
+                if (i == 0 && j == 0)
+                    curr[j] = 1;  // same like base
+                else {
+                    int up = 0;
+                    int left = 0;
+
+                    // check that i and j should not go in  negative
+                    if (i > 0) up = prev[j];
+                    if (j > 0) left = curr[j - 1];
+
+                    curr[j] = up + left;
+                }
+            }
+            prev = curr;
+        }
+        return prev[n - 1];
+    }
+};
+
+SC : O(n)

@@ -1,0 +1,50 @@
+An image is represented by a 2-D array of integers, each integer representing the pixel value of the image. Given a coordinate (sr, sc) representing the starting pixel (row and column) of the flood fill, and a pixel value newColor, "flood fill" the image.
+
+To perform a flood fill, consider the starting pixel, plus any pixels connected 4-directionally to the starting pixel of the same colour as the starting pixel, plus any pixels connected 4-directionally to those pixels (also with the same colour as the starting pixel), and so on. Replace the colour of all of the aforementioned pixels with the newColor.
+
+Solution : 
+
+class Solution {
+   private:
+    void dfs(int row, int col, vector<vector<int>> &image,
+             vector<vector<int>> &ans, int initialColor, int newColor,
+             int delrow[], int delcol[]) {
+        int n = image.size();
+        int m = image[0].size();
+        ans[row][col] = newColor;
+
+        // traverse in 4 directions
+        for (int i = 0; i < 4; i++) {
+            int nrow = row + delrow[i];
+            int ncol = col + delcol[i];
+
+            // checking valid
+            if (nrow >= 0 && nrow < n && ncol >= 0 && ncol < m &&
+                ans[nrow][ncol] != newColor &&
+                image[nrow][ncol] == initialColor)
+                dfs(nrow, ncol, image, ans, initialColor, newColor, delrow,
+                    delcol);
+        }
+    }
+
+   public:
+    vector<vector<int>> floodFill(vector<vector<int>> &image, int sr, int sc,
+                                  int newColor) {
+        int initialColor = image[sr][sc];
+
+        // copy the image matrix to store the ans;
+        vector<vector<int>> ans = image;
+
+        // to traverse in 4 directions
+        int delrow[] = {-1, 0, 1, 0};
+        int delcol[] = {0, 1, 0, -1};
+
+        dfs(sr, sc, image, ans, initialColor, newColor, delrow, delcol);
+
+        return ans;
+    }
+};
+
+
+TC : O(n*m)
+SC : O(4 x 4 x n * m)

@@ -1,0 +1,131 @@
+Given an integer array nums of size n. Return the maximum sum possible using the elements of nums such that no two elements taken are adjacent in nums.
+
+
+
+A subsequence of array is a sequence that can be derived from the array by deleting some or no elements without changing the order of the remaining elements.
+
+
+Examples:
+Input: nums = [1, 2, 4]
+
+Output: 5
+
+Explanation: [1, 2, 4], the underlined elements are taken to get the maximum sum.
+
+Recursion Intution : 
+
+class Solution {
+public:
+
+int helper(int ind, vector<int>& nums){
+
+    // base case
+    if(ind == 0) return nums[0];
+    if(ind == -1) return 0;
+
+    // pick & non-pick
+    int pick = nums[ind] + helper(ind-2, nums);
+    int notPick = 0 + helper(ind-1, nums);
+
+    return max(pick, notPick);
+}
+    int nonAdjacent(vector<int>& nums) {
+
+        int n = nums.size();
+        return helper(n-1 , nums);
+    }
+};
+
+TC : O(2^N)
+SC : O(N)
+
+Memoization : 
+
+class Solution {
+public:
+
+int helper(int ind, vector<int>& nums, vector<int>& dp){
+
+    // base case
+    if(ind == 0) return nums[0];
+    if(ind == -1) return 0;
+
+    if(dp[ind] != -1) return dp[ind];
+
+    // pick & non-pick
+    int pick = nums[ind] + helper(ind-2, nums, dp);
+    int notPick = 0 + helper(ind-1, nums, dp);
+
+    return dp[ind] = max(pick, notPick);
+}
+    int nonAdjacent(vector<int>& nums) {
+
+        int n = nums.size();
+        vector<int> dp(n, -1);
+        return helper(n-1 , nums, dp);
+    }
+};
+
+TC : O(N)
+SC : O(N) + O(N)
+
+Tabulation : 
+
+class Solution {
+public:
+
+    int nonAdjacent(vector<int>& nums) {
+
+        int n = nums.size();
+        vector<int> dp(n, -1);
+        
+        dp[0] = nums[0];
+
+        for(int ind = 1; ind < n ; ind++){
+
+            int pick = nums[ind];
+            if(ind > 1) pick+= dp[ind - 2];// edge case
+            int notPick = 0 + dp[ind - 1];
+
+            dp[ind] = max(pick, notPick);
+        }
+
+        return dp[n -1];
+    }
+};
+TC : O(N)
+SC : O{N)
+
+Space optimization : 
+
+class Solution {
+public:
+
+    int nonAdjacent(vector<int>& nums) {
+
+        int n = nums.size();
+        
+        int prev = nums[0];
+        int prev2 = 0;
+
+        for(int ind = 1; ind < n ; ind++){
+
+            int pick = nums[ind];
+            if(ind > 1) pick+= prev2;// edge case
+            int notPick = 0 + prev;
+
+            int curr_i = max(pick, notPick);
+
+            prev2 = prev;
+            prev = curr_i;
+        }
+
+        return prev;
+    }
+};
+
+TC : O(N)
+SC : O{1)
+
+
+

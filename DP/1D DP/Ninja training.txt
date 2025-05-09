@@ -1,0 +1,203 @@
+A ninja has planned a n-day training schedule. Each day he has to perform one of three activities - running, stealth training, or fighting practice. The same activity cannot be done on two consecutive days and the ninja earns a specific number of merit points, based on the activity and the given day.
+
+Given a n x 3-sized matrix, where matrix[i][0], matrix[i][1], and matrix[i][2], represent the merit points associated with running, stealth and fighting practice, on the (i+1)th day respectively. Return the maximum possible merit points that the ninja can earn.
+
+Input: matrix = [[10, 40, 70], [20, 50, 80], [30, 60, 90]]
+
+Output: 210
+
+Explanation:
+
+Day 1: fighting practice = 70
+
+Day 2: stealth training = 50
+
+Day 3: fighting practice = 90
+
+Total = 70 + 50 + 90 = 210
+
+This gives the optimal points.
+
+
+Recursive : 
+
+class Solution {
+   public:
+    int helper(int day, int last, vector<vector<int>>& matrix) {
+        // base case & here day --> treating as index
+        if (day == 0) {
+            int maxi = 0;
+            for (int task = 0; task < 3; task++) {
+                if (task != last) {
+                    // to get the maximum of 0th day for all the task
+                    maxi = max(maxi, matrix[0][task]);
+                }
+            }
+            return maxi;
+        }
+
+        // Doing similar stuff as base case
+        int maxi = 0;
+        for (int task = 0; task < 3; task++) {
+            if (task != last) {
+                // this indicates max of previous day + current day
+                int point = matrix[day][task] + helper(day - 1, task, matrix);
+
+                // By passing the task in recursive functiom, last can be
+                // altered
+                maxi = max(maxi, point);
+            }
+        }
+        return maxi;
+    }
+
+    int ninjaTraining(vector<vector<int>>& matrix) {
+        int n = matrix.size();
+
+        // passing 3 because there is 3 task which is 0,1,2 & 3rd indicates no
+        // task has been performed
+        return helper(n - 1, 3, matrix);
+    }
+};
+
+TC : O(3^N)
+SC : O(N)
+
+
+Memoization : 
+
+class Solution {
+   public:
+    int helper(int day, int last, vector<vector<int>>& matrix,
+               vector<vector<int>>& dp) {
+        // base case & here day --> treating as index
+        if (day == 0) {
+            int maxi = 0;
+            for (int task = 0; task < 3; task++) {
+                if (task != last) {
+                    // to get the maximum of 0th day for all the task
+                    maxi = max(maxi, matrix[0][task]);
+                }
+            }
+            return maxi;
+        }
+
+        if (dp[day][last] != -1) return dp[day][last];
+        // Doing similar stuff as base case
+        int maxi = 0;
+        for (int task = 0; task < 3; task++) {
+            if (task != last) {
+                // this indicates max of previous day + current day
+                int point =
+                    matrix[day][task] + helper(day - 1, task, matrix, dp);
+
+                // By passing the task in recursive functiom, last can be
+                // altered
+                maxi = max(maxi, point);
+            }
+        }
+        return dp[day][last] = maxi;
+    }
+
+    int ninjaTraining(vector<vector<int>>& matrix) {
+        int n = matrix.size();
+
+        // Declaring a Nx4 dp matrix because days can be N but task / last can
+        // be 3 only ( 0 based indexing )
+        vector<vector<int>> dp(n, vector<int>(4, -1));
+
+        // passing 3 because there is 3 task which is 0,1,2 & 3rd indicates no
+        // task has been performed
+        return helper(n - 1, 3, matrix, dp);
+    }
+};
+
+TC : O(N x 4 x 3)
+SC : O(N x 4) + O (N) --> because of 2D Matrix
+
+
+Tabulation : 
+
+class Solution {
+   public:
+    int ninjaTraining(vector<vector<int>>& matrix) {
+        int n = matrix.size();
+
+        // Declaring a Nx4 dp matrix because days can be N but task / last can
+        // be 3 only ( 0 based indexing )
+        vector<vector<int>> dp(n, vector<int>(4, 0));
+
+        // pre initalizing the value similar to base case
+        dp[0][0] = max(matrix[0][1], matrix[0][2]);
+        dp[0][1] = max(matrix[0][0], matrix[0][2]);
+        dp[0][2] = max(matrix[0][0], matrix[0][1]);
+        dp[0][3] = max(matrix[0][0], max(matrix[0][1], matrix[0][2]));
+
+        // filling matrix
+        for (int day = 1; day < n; day++) {         // day can be n
+            for (int last = 0; last < 4; last++) {  // last is only 0,1,2,3
+
+                dp[day][last] = 0;
+
+                // similar to recursion
+                for (int task = 0; task < 3; task++) {
+                    if (task != last) {
+                        int point = matrix[day][task] + dp[day - 1][task];
+
+                        dp[day][last] = max(point, dp[day][last]);
+                    }
+                }
+            }
+        }
+
+        return dp[n - 1][3];
+    }
+};
+
+TC : O(N x 4 x 3)
+SC : O(N x 4) 
+
+Space optimization : 
+
+class Solution {
+   public:
+    int ninjaTraining(vector<vector<int>>& matrix) {
+        int n = matrix.size();
+
+        // Declaring a 4 size because there are 4 task only including 3rd
+        vector<int> prev(4, 0);
+
+        // pre initalizing the value similar to base case
+        prev[0] = max(matrix[0][1], matrix[0][2]);
+        prev[1] = max(matrix[0][0], matrix[0][2]);
+        prev[2] = max(matrix[0][0], matrix[0][1]);
+        prev[3] = max(matrix[0][0], max(matrix[0][1], matrix[0][2]));
+
+        // filling matrix
+        for (int day = 1; day < n; day++) {  // day can be n
+
+            // declaring a temp array
+            vector<int> temp(4, 0);
+            for (int last = 0; last < 4; last++) {  // last is only 0,1,2,3
+
+                temp[last] = 0;
+
+                // similar to recursion
+                for (int task = 0; task < 3; task++) {
+                    if (task != last) {
+                        int point = matrix[day][task] + prev[task];
+
+                        temp[last] = max(point, temp[last]);
+                    }
+                }
+            }
+            prev = temp;  // storing all the data of temp vector to prev
+        }
+
+        return prev[3];
+    }
+};
+
+TC : O(N x 4 x 3)
+SC : O(4) 
+

@@ -1,0 +1,99 @@
+Recursion Intution : 
+
+class Solution {
+public:
+
+    int helper(vector<int>& heights, int k,int ind){
+
+        // base case
+        if(ind == 0) return 0;
+
+        int minSteps = INT_MAX;
+
+        for(int j=1; j<=k; j++){
+            if(ind - j >= 0){
+               int jump = helper(heights, k , ind - j) + abs(heights[ind] - heights[ind - j]);
+            
+            minSteps = min(minSteps,jump);
+            }
+        }
+        return minSteps;
+    }
+
+    int frogJump(vector<int>& heights, int k) {
+        int n = heights.size();
+
+        return helper(heights,k,n-1);
+    }
+};
+
+TC : O(K^N)
+SC : O(N)
+
+Memoization : 
+
+class Solution {
+public:
+
+    int helper(vector<int>& dp,vector<int>& heights, int k,int ind){
+
+        // base case
+        if(ind == 0) return 0;
+
+        int minSteps = INT_MAX;
+
+        if(dp[ind] != -1) return dp[ind];
+
+        for(int j=1; j<=k; j++){
+            if(ind - j >= 0){
+               int jump = helper(dp, heights, k , ind - j) + abs(heights[ind] - heights[ind - j]);
+            
+            minSteps = min(minSteps,jump);
+            }
+        }
+        return dp[ind] = minSteps;
+    }
+
+    int frogJump(vector<int>& heights, int k) {
+        int n = heights.size();
+        vector<int> dp(n,-1);
+
+        return helper(dp, heights,k,n-1);
+    }
+};
+
+TC : O(N x K)
+SC : O(N)+ o(N)
+
+Tabulation : 
+
+class Solution {
+public:
+
+    int frogJump(vector<int>& heights, int k) {
+        int n = heights.size();
+        vector<int> dp(n,-1);
+
+        dp[0] = 0;
+
+        for(int ind = 1; ind < n; ind++){
+            
+            int minSteps = INT_MAX;
+
+        for(int j = 1;j<=k;j++){
+
+            if(ind - j >= 0){
+                int jump = dp[ind - j] + abs(heights[ind] - heights[ind - j]);
+                minSteps = min(minSteps, jump);
+            }
+            dp[ind] = minSteps;
+        }
+        }
+        return dp[n-1];
+    }
+};
+
+TC : O(N x K)
+SC : O(N)
+
+

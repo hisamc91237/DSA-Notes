@@ -1,0 +1,16 @@
+class Solution {
+   public:
+    int maxDepth(TreeNode* root) {
+        // base case
+        if (root == NULL) return 0;
+
+        // finding left and right height.
+        int lh = maxDepth(root->left);
+        int rh = maxDepth(root->right);
+
+        return 1 + max(lh, rh);
+    }
+};
+
+TC : O(N)
+SC : O(H)
